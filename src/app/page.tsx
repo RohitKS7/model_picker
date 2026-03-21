@@ -59,7 +59,7 @@ export default function HomePage() {
       <main className="pb-8">
         <section className="container-brand relative py-8 sm:py-10 md:py-12 lg:py-12">
           <div className="absolute left-1/2 top-2 z-10 w-max -translate-x-1/2 sm:top-4 lg:top-6">
-            <div className="mx-auto inline-flex max-w-full items-center justify-center rounded-full bg-accent px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-primary-foreground shadow-sm">
+            <div className="mx-auto inline-flex max-w-full items-center justify-center rounded-full bg-accent px-4 py-2 text-[0.68rem] font-semibold uppercase tracking-[0.14em] text-primary-foreground shadow-sm reveal-up">
               Part of GuardClaw Ecosystem - Built by Rohit
             </div>
           </div>
@@ -75,7 +75,7 @@ export default function HomePage() {
                 primary and fallback stack, copy the config, and move on.
               </p>
 
-              <div className="mx-auto mt-8 flex max-w-[22rem] flex-wrap items-center justify-center gap-2.5 text-center lg:mx-0 lg:max-w-[30rem] lg:justify-start reveal-up reveal-delay-2.5">
+              <div className="mx-auto mt-8 flex max-w-[22rem] flex-wrap items-center justify-center gap-2.5 text-center lg:mx-0 lg:max-w-[30rem] lg:justify-start reveal-up reveal-delay-3">
                 {heroBadges.map((badge) => (
                   <span
                     key={badge}
@@ -86,13 +86,15 @@ export default function HomePage() {
                 ))}
               </div>
 
-              <div className="mt-8 flex flex-wrap gap-3 max-md:justify-center reveal-up reveal-delay-2.5">
-                <Link
-                  href="/pick"
-                  className="rounded-full bg-accent px-8 py-4 text-base font-semibold text-accent-foreground transition hover:brightness-105"
-                >
-                  Start the 5-question flow &#x2192;
-                </Link>
+              <div className="mt-8 flex flex-wrap gap-3 max-md:justify-center reveal-up reveal-delay-3">
+                <div className="inline-flex pulse-cta">
+                  <Link
+                    href="/pick"
+                    className="rounded-full bg-accent px-8 py-4 text-base font-semibold text-accent-foreground transition hover:brightness-105"
+                  >
+                    Start the 5-question flow &#x2192;
+                  </Link>
+                </div>
                 <Link
                   href={SOCIAL_LINKS.tool_calculator}
                   target="_blank"
@@ -114,7 +116,7 @@ export default function HomePage() {
                   key={item.quote}
                   className={`rounded-brand border border-primary/20 bg-secondary p-6 ${
                     index % 2 === 0 ? "-rotate-1" : "rotate-1"
-                  }`}
+                  } hover-lift`}
                 >
                   <p className="font-serif text-2xl italic leading-relaxed text-foreground">"{item.quote}"</p>
                   <p className="mt-4 text-xs font-semibold tracking-[0.16em] text-muted-foreground [font-variant:small-caps]">
@@ -136,7 +138,7 @@ export default function HomePage() {
             </div>
           <MotionSection className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
             {whatItDoes.map((item, index) => (
-              <article key={item} className="rounded-brand border border-primary/20 bg-background/85 p-5">
+              <article key={item} className="rounded-brand border border-primary/20 bg-background/85 p-5 hover-lift">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Step 0{index + 1}</p>
                 <p className="mt-3 text-lg font-semibold text-foreground">{item}</p>
               </article>
@@ -167,7 +169,7 @@ More tools are coming to solve the rest." - Rohit`}
           </section>
 
           <MotionSection className="grid gap-6 lg:grid-cols-2" delay={0.1}>
-            <section className="rounded-brand border border-primary/20 bg-background/90 p-6">
+            <section className="rounded-brand border border-primary/20 bg-background/90 p-6 hover-lift">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ecosystem</p>
               <h2 className="mt-3 text-3xl font-bold">One tool should lead cleanly into the next.</h2>
               <p className="mt-3 text-muted-foreground">
@@ -178,7 +180,7 @@ More tools are coming to solve the rest." - Rohit`}
                 <Link
                   href={SOCIAL_LINKS.tool_calculator}
                   target="_blank"
-                  className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground"
+                  className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
                 >
                   Visit Calculator
                 </Link>
@@ -192,7 +194,7 @@ More tools are coming to solve the rest." - Rohit`}
               </div>
             </section>
 
-            <section className="rounded-brand border border-accent/30 bg-background/90 p-6">
+            <section className="rounded-brand border border-accent/30 bg-background/90 p-6 hover-lift">
               <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Support</p>
               <h2 className="mt-3 text-3xl font-bold">Help more OpenClaw users find it.</h2>
               <p className="mt-3 text-muted-foreground">
@@ -202,7 +204,7 @@ More tools are coming to solve the rest." - Rohit`}
                 <Link
                   href={SOCIAL_LINKS.github}
                   target="_blank"
-                  className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-foreground"
+                  className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-foreground transition hover:opacity-90"
                 >
                   Star on GitHub
                 </Link>
@@ -221,7 +223,7 @@ More tools are coming to solve the rest." - Rohit`}
             <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Future tools</p>
             <div className="mt-4 grid gap-4 md:grid-cols-3">
               {FUTURE_TOOLS.map((tool) => (
-                <article key={tool.name} className="rounded-brand border border-primary/15 bg-secondary/25 p-4">
+                <article key={tool.name} className="rounded-brand border border-primary/15 bg-secondary/25 p-4 hover-lift">
                   <h3 className="text-xl font-bold">{tool.name}</h3>
                   <p className="mt-2 text-sm text-muted-foreground">{tool.description}</p>
                 </article>

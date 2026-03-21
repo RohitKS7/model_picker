@@ -20,7 +20,7 @@ export function ConfigSnippet({ snippet }: ConfigSnippetProps) {
   };
 
   return (
-    <section className="rounded-brand border border-primary/20 bg-background/95 p-5">
+    <section className="rounded-brand border border-primary/20 bg-background/95 p-5 hover-lift">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Paste-ready Config</p>

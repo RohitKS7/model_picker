@@ -11,7 +11,7 @@ export function EcosystemCTA({ primaryModelId, fallbackModelId }: EcosystemCTAPr
   const href = `${SOCIAL_LINKS.tool_calculator}/calculate?pm=${encodeURIComponent(primaryModelId)}&fm=${encodeURIComponent(fallbackModelId)}`;
 
   return (
-    <section className="rounded-brand border border-primary/20 bg-background/90 p-5">
+    <section className="rounded-brand border border-primary/20 bg-background/90 p-5 hover-lift">
       <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Ecosystem Handoff</p>
       <h3 className="mt-2 text-xl font-bold">Want to see the exact cost for this setup?</h3>
       <p className="mt-2 text-sm text-muted-foreground">

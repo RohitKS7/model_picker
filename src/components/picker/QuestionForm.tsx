@@ -139,7 +139,7 @@ export function QuestionForm() {
 
   return (
     <div className="grid gap-8 pb-14 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
-      <section className="min-w-0 rounded-brand border border-primary/20 bg-background/90 p-6">
+      <section className="min-w-0 rounded-brand border border-primary/20 bg-background/90 p-6 hover-lift">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Five Questions</p>
@@ -151,7 +151,7 @@ export function QuestionForm() {
         </div>
 
         <div className="mt-8 space-y-8">
-          <div className="bg-secondary p-4 rounded-md">
+          <div className="bg-secondary p-4 rounded-md hover-lift">
             <button
               type="button"
               onClick={() => setIsUseCaseOpen((current) => !current)}
@@ -190,7 +190,7 @@ export function QuestionForm() {
             ) : null}
           </div>
 
-          <div className="bg-secondary p-4 rounded-md">
+          <div className="bg-secondary p-4 rounded-md hover-lift">
             <p className="text-sm font-semibold text-foreground ">2. How much do you want to spend per month?</p>
             <div className="mt-3 flex flex-wrap gap-3">
               {budgetOptions.map((option) => (
@@ -206,7 +206,7 @@ export function QuestionForm() {
             </div>
           </div>
 
-          <div className="bg-secondary p-4 rounded-md">
+          <div className="bg-secondary p-4 rounded-md hover-lift">
             <p className="text-sm font-semibold text-foreground">3. How are you paying?</p>
             <p className="mt-1 text-sm text-muted-foreground">
               This changes how aggressively we optimize for token-priced spend.
@@ -230,7 +230,7 @@ export function QuestionForm() {
             </div>
           </div>
 
-          <div className="bg-secondary p-4 rounded-md">
+          <div className="bg-secondary p-4 rounded-md hover-lift">
             <p className="text-sm font-semibold text-foreground">4. Does your use case require reliable tool calls?</p>
             <div className="mt-3 flex flex-wrap gap-3">
               {toolCallOptions.map((option) => (
@@ -246,7 +246,7 @@ export function QuestionForm() {
             </div>
           </div>
 
-          <div className="bg-secondary p-4 rounded-md">
+          <div className="bg-secondary p-4 rounded-md hover-lift">
             <p className="text-sm font-semibold text-foreground">5. Are you comfortable running a local model alongside a cloud model?</p>
             <div className="mt-3 flex flex-wrap gap-3">
               {localOptions.map((option) => (
@@ -265,7 +265,7 @@ export function QuestionForm() {
       </section>
 
       <div className="min-w-0 space-y-5 lg:sticky lg:top-24 lg:self-start">
-        <section className="min-w-0 rounded-brand border border-primary/20 bg-background/95 p-6">
+        <section className="min-w-0 rounded-brand border border-primary/20 bg-background/95 p-6 hover-lift">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Live Recommendation</p>
           <h2 className="mt-2 text-3xl font-bold">Your suggested model stack</h2>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -286,7 +286,7 @@ export function QuestionForm() {
           fallbackModelId={recommendation.fallback.modelId}
         />
 
-        <div className="flex flex-wrap items-center gap-3 rounded-brand border border-primary/20 bg-secondary/30 p-4">
+        <div className="flex flex-wrap items-center gap-3 rounded-brand border border-primary/20 bg-secondary/30 p-4 hover-lift">
           <ShareButton url={shareUrl} />
           <p className="text-sm text-muted-foreground">Share this exact setup using a URL with encoded answers.</p>
         </div>

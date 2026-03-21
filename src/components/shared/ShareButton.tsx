@@ -23,7 +23,7 @@ export function ShareButton({ url }: ShareButtonProps) {
     <button
       type="button"
       onClick={copy}
-      className="rounded-full border border-primary/30 px-5 py-2 text-sm font-semibold transition hover:bg-primary hover:text-primary-foreground"
+      className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-accent-foreground transition hover:opacity-90"
     >
       {copied ? "Share URL Copied" : "Copy Share URL"}
     </button>

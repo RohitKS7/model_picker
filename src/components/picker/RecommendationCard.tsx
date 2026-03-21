@@ -1,7 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
-
 import type { ModelEntry } from "@/types/picker";
 
 interface RecommendationCardProps {
@@ -13,11 +11,8 @@ export function RecommendationCard({ label, entry }: RecommendationCardProps) {
   const isPrimary = label === "Primary";
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
-      className={`rounded-brand border p-5 ${
+    <article
+      className={`rounded-brand border p-5 hover-lift ${
         isPrimary ? "border-accent/40 bg-background" : "border-primary/20 bg-secondary/35"
       }`}
     >
@@ -47,6 +42,6 @@ export function RecommendationCard({ label, entry }: RecommendationCardProps) {
           <span className="font-semibold text-foreground">Trigger:</span> {entry.triggerCondition}
         </p>
       ) : null}
-    </motion.article>
+    </article>
   );
 }

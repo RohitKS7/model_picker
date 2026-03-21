@@ -33,7 +33,7 @@ export default function PickPage() {
         <QuestionForm />
       </Suspense>
 
-      <MotionSection className="mb-12 rounded-brand border border-primary/20 bg-secondary/35 p-6">
+      <MotionSection className="mb-12 rounded-brand border border-primary/20 bg-secondary/35 p-6 hover-lift">
         <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">Why this recommendation is opinionated</p>
         <h2 className="mt-3 text-3xl font-bold">The tool prefers reliable decisions over vague flexibility.</h2>
         <p className="mt-3 max-w-4xl text-muted-foreground">

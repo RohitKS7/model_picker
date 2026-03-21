@@ -20,7 +20,7 @@ export function ShareResult({ text }: ShareResultProps) {
   };
 
   return (
-    <section className="rounded-brand border border-primary/20 bg-background/90 p-5">
+    <section className="rounded-brand border border-primary/20 bg-background/90 p-5 hover-lift">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Shareable Result</p>
