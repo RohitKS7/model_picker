@@ -13,9 +13,12 @@ interface RecommendationRule {
   showComparison?: boolean;
 }
 
+const needsToolCalls = (input: PickerInput): boolean =>
+  input.toolCalls === "yes" || input.toolCalls === "unsure";
+
 const RULES: RecommendationRule[] = [
   {
-    match: (input) => input.useCase === "coding" && input.toolCalls === "yes" && input.budget === "40plus",
+    match: (input) => input.useCase === "coding" && needsToolCalls(input) && input.budget === "40plus",
     primaryId: "anthropic/claude-sonnet-4-6",
     primaryReason: "Best tool call reliability when cost is not the main constraint.",
     fallbackId: "anthropic/claude-haiku-4-5",
@@ -23,7 +26,7 @@ const RULES: RecommendationRule[] = [
     fallbackTrigger: "Falls back when long coding runs need a cheaper recovery path.",
   },
   {
-    match: (input) => input.useCase === "coding" && input.toolCalls === "yes" && input.budget === "20to40",
+    match: (input) => input.useCase === "coding" && needsToolCalls(input) && input.budget === "20to40",
     primaryId: "anthropic/claude-sonnet-4-6",
     primaryReason: "Strong coding quality with more predictable tool use than cheaper options.",
     fallbackId: "moonshot/kimi-k2.5",
@@ -31,7 +34,7 @@ const RULES: RecommendationRule[] = [
     fallbackTrigger: "Falls back when the primary run is too expensive for the next task.",
   },
   {
-    match: (input) => input.useCase === "coding" && input.toolCalls === "yes" && input.budget === "under10",
+    match: (input) => input.useCase === "coding" && needsToolCalls(input) && input.budget === "under10",
     primaryId: "moonshot/kimi-k2.5",
     primaryReason: "Best budget coding pick when you still need solid tool-call support.",
     fallbackId: "anthropic/claude-haiku-4-5",
@@ -89,12 +92,28 @@ const RULES: RecommendationRule[] = [
     fallbackTrigger: "Falls back when the primary answer quality is more than you need.",
   },
   {
-    match: (input) => input.useCase === "automation" && input.toolCalls === "yes",
+    match: (input) =>
+      input.useCase === "automation" &&
+      needsToolCalls(input) &&
+      input.billing === "subscription" &&
+      (input.budget === "20to40" || input.budget === "40plus"),
     primaryId: "anthropic/claude-sonnet-4-6",
-    primaryReason: "Reliable automation usually starts with dependable tool behavior.",
+    primaryReason: "Most reliable automation with Claude subscription.",
     fallbackId: "anthropic/claude-haiku-4-5",
     fallbackReason: "Lower-cost backup when the flow can tolerate a smaller model.",
-    fallbackTrigger: "Falls back when automations need a cheaper retry path after failure.",
+    fallbackTrigger: "Falls back when automations need a cheaper retry path.",
+  },
+  {
+    match: (input) =>
+      input.useCase === "automation" &&
+      needsToolCalls(input) &&
+      input.billing === "api" &&
+      (input.budget === "20to40" || input.budget === "40plus"),
+    primaryId: "anthropic/claude-sonnet-4-6",
+    primaryReason: "Best tool call reliability in this API budget range.",
+    fallbackId: "anthropic/claude-haiku-4-5",
+    fallbackReason: "Cheaper fallback for less critical automation steps.",
+    fallbackTrigger: "Falls back when automations need a cheaper retry path.",
   },
   {
     match: (input) => input.useCase === "automation" && input.toolCalls === "no" && input.budget === "under10",
@@ -128,16 +147,34 @@ const RULES: RecommendationRule[] = [
     fallbackReason: "Cheaper backup for quick end-of-day summaries.",
     fallbackTrigger: "Falls back when the recap is straightforward and does not need extra depth.",
   },
-  // Billing-aware rules for new budget tiers
-  // Coding + subscription + 20to40 (Claude Pro vs ChatGPT Plus at $20)
+  // Coding + subscription + 20to40
   {
-    match: (input) => input.useCase === "coding" && input.billing === "subscription" && input.budget === "20to40",
+    match: (input) =>
+      input.useCase === "coding" &&
+      input.billing === "subscription" &&
+      input.budget === "20to40" &&
+      needsToolCalls(input),
     primaryId: "anthropic/claude-sonnet-4-6",
-    primaryReason: "Best coding reliability at this price.",
-    fallbackId: "openai-codex/gpt-5.3-codex",
-    fallbackReason: "Alternative at same price point when Claude is unavailable.",
-    fallbackTrigger: "Falls back when Claude Pro rate limits are reached.",
+    primaryReason: "Best tool call reliability at the $20 subscription tier.",
+    fallbackId: "anthropic/claude-haiku-4-5",
+    fallbackReason: "Lower-cost backup that keeps behavior predictable.",
+    fallbackTrigger: "Falls back when the primary model is overkill for the next turn.",
     showComparison: true,
+    // ComparisonNote shows GPT as the high-volume alternative
+  },
+  {
+    match: (input) =>
+      input.useCase === "coding" &&
+      input.billing === "subscription" &&
+      input.budget === "20to40" &&
+      input.toolCalls === "no",
+    primaryId: "openai/gpt-4o",
+    primaryReason: "6x more messages per day than Claude Pro at the same $20 price. Best choice when tool call reliability is not a constraint.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "API-based backup when subscription model hits daily limit.",
+    fallbackTrigger: "Falls back when the daily message limit is reached.",
+    showComparison: true,
+    // ComparisonNote still renders — now shows Claude as the capability alternative
   },
   // Coding + subscription + 15to20
   {
@@ -162,9 +199,9 @@ const RULES: RecommendationRule[] = [
     match: (input) => input.useCase === "assistant" && input.billing === "subscription" && input.budget === "20to40",
     primaryId: "anthropic/claude-sonnet-4-6",
     primaryReason: "Best assistant quality at the $20 price point.",
-    fallbackId: "openai/gpt-4.1",
-    fallbackReason: "ChatGPT Plus alternative with higher message limits.",
-    fallbackTrigger: "Falls back when Claude Pro daily limits are reached.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "API-based backup when subscription model hits daily limit.",
+    fallbackTrigger: "Falls back when Claude Pro message limits are reached.",
     showComparison: true,
   },
   // Assistant + subscription + 15to20
@@ -217,9 +254,9 @@ const RULES: RecommendationRule[] = [
     match: (input) => input.useCase === "debrief" && input.billing === "subscription" && input.budget === "20to40",
     primaryId: "anthropic/claude-sonnet-4-6",
     primaryReason: "Best summary quality at the subscription price point.",
-    fallbackId: "openai/gpt-4.1",
-    fallbackReason: "Higher volume option with ChatGPT Plus.",
-    fallbackTrigger: "Falls back when Claude Pro message limits are hit.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "Cost-effective backup for routine debrief tasks.",
+    fallbackTrigger: "Falls back when the debrief is straightforward.",
     showComparison: true,
   },
   // AUTOMATION — subscription billing (all budget tiers)
@@ -419,6 +456,131 @@ const RULES: RecommendationRule[] = [
     fallbackReason: "Lower-cost backup when you still want Anthropic-style behavior.",
     fallbackTrigger: "Falls back when the primary model is overkill for the next turn.",
   },
+  // ASSISTANT + API billing
+  {
+    match: (input) =>
+      input.useCase === "assistant" &&
+      input.billing === "api" &&
+      input.budget === "under10",
+    primaryId: "moonshot/kimi-k2.5",
+    primaryReason: "Best assistant quality within $10 API budget.",
+    fallbackId: "minimax/minimax-m2.5",
+    fallbackReason: "Budget-safe backup for lighter support and chat flows.",
+    fallbackTrigger: "Falls back when the primary answer quality is more than you need.",
+  },
+  {
+    match: (input) =>
+      input.useCase === "assistant" &&
+      input.billing === "api" &&
+      input.budget === "10to15",
+    primaryId: "moonshot/kimi-k2.5",
+    primaryReason: "Best assistant quality within $10-15 API budget.",
+    fallbackId: "minimax/minimax-m2.5",
+    fallbackReason: "Budget-safe backup for lighter support.",
+    fallbackTrigger: "Falls back when the primary answer quality is more than you need.",
+  },
+  {
+    match: (input) =>
+      input.useCase === "assistant" &&
+      input.billing === "api" &&
+      input.budget === "15to20",
+    primaryId: "moonshot/kimi-k2.5",
+    primaryReason: "Capable assistant within $15-20 API spend.",
+    fallbackId: "google/gemini-2.5-flash",
+    fallbackReason: "Fast and cheap backup for routine assistant tasks.",
+    fallbackTrigger: "Falls back when the task is simple enough for Flash.",
+  },
+  {
+    match: (input) =>
+      input.useCase === "assistant" &&
+      input.billing === "api" &&
+      input.budget === "20to40",
+    primaryId: "anthropic/claude-sonnet-4-6",
+    primaryReason: "Best assistant quality within $20-40 API budget.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "Cost-effective backup for routine assistant turns.",
+    fallbackTrigger: "Falls back when you want to preserve budget on simple turns.",
+  },
+  {
+    match: (input) =>
+      input.useCase === "assistant" &&
+      input.billing === "api" &&
+      input.budget === "40plus",
+    primaryId: "anthropic/claude-opus-4-6",
+    primaryReason: "Best fit for high-touch assistant work where polish matters most.",
+    fallbackId: "anthropic/claude-sonnet-4-6",
+    fallbackReason: "Keeps tone and quality close while lowering spend for routine turns.",
+    fallbackTrigger: "Falls back when the request does not justify Opus-level spend.",
+  },
+  // AUTOMATION + API billing (missing tiers)
+  {
+    match: (input) =>
+      input.useCase === "automation" &&
+      input.billing === "api" &&
+      input.budget === "under10",
+    primaryId: "moonshot/kimi-k2.5",
+    primaryReason: "Reliable automation workhorse at low API cost.",
+    fallbackId: "minimax/minimax-m2.5",
+    fallbackReason: "Lower-cost backup for high-volume automation runs.",
+    fallbackTrigger: "Falls back when cost per run needs to be minimized.",
+  },
+  // DEBRIEF + API billing (no rules exist at all)
+  {
+    match: (input) =>
+      input.useCase === "debrief" &&
+      input.billing === "api" &&
+      input.budget === "under10",
+    primaryId: "moonshot/kimi-k2.5",
+    primaryReason: "Cost-effective for daily recaps at low API cost.",
+    fallbackId: "minimax/minimax-m2.5",
+    fallbackReason: "Cheaper backup for quick end-of-day summaries.",
+    fallbackTrigger: "Falls back when the recap is straightforward.",
+  },
+  {
+    match: (input) =>
+      input.useCase === "debrief" &&
+      input.billing === "api" &&
+      (input.budget === "10to15" || input.budget === "15to20"),
+    primaryId: "moonshot/kimi-k2.5",
+    primaryReason: "Best debrief quality in this API budget range.",
+    fallbackId: "google/gemini-2.5-flash",
+    fallbackReason: "Fast backup for routine daily summaries.",
+    fallbackTrigger: "Falls back when summary is short enough for Flash.",
+  },
+  {
+    match: (input) =>
+      input.useCase === "debrief" &&
+      input.billing === "api" &&
+      (input.budget === "20to40" || input.budget === "40plus"),
+    primaryId: "anthropic/claude-sonnet-4-6",
+    primaryReason: "Best summary quality at this API budget.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "Cost-effective backup for routine debrief tasks.",
+    fallbackTrigger: "Falls back when the recap is straightforward.",
+  },
+  // RESEARCH + API billing (missing 20to40 and 40plus)
+  {
+    match: (input) =>
+      input.useCase === "research" &&
+      input.billing === "api" &&
+      input.budget === "20to40",
+    primaryId: "google/gemini-2.5-pro",
+    primaryReason: "Strong research depth within $20-40 API spend.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "Cost-effective backup for first-pass synthesis.",
+    fallbackTrigger: "Falls back when a task only needs a fast first pass.",
+  },
+  {
+    match: (input) =>
+      input.useCase === "research" &&
+      input.billing === "api" &&
+      input.budget === "40plus",
+    primaryId: "anthropic/claude-opus-4-6",
+    primaryReason: "Best fit for deep synthesis and long-form research.",
+    fallbackId: "google/gemini-2.5-pro",
+    fallbackReason: "Strong research backup with lower spend than Opus.",
+    fallbackTrigger: "Falls back when you want broad research without Opus pricing.",
+  },
 ];
 
 const DEFAULT_RULE: RecommendationRule = {
@@ -428,6 +590,22 @@ const DEFAULT_RULE: RecommendationRule = {
   fallbackId: "anthropic/claude-haiku-4-5",
   fallbackReason: "Lower-cost backup that keeps behavior predictable.",
   fallbackTrigger: "Falls back when the primary model is overkill for the next turn.",
+};
+
+const buildOutput = (rule: RecommendationRule, input: PickerInput): PickerOutput => {
+  const costRange = getEstimatedMonthlyRange(input, rule.primaryId, rule.fallbackId);
+
+  return {
+    primary: {
+      ...buildModelEntry(rule.primaryId, rule.primaryReason),
+      estimatedMonthly: costRange,
+    },
+    fallback: buildModelEntry(rule.fallbackId, rule.fallbackReason, rule.fallbackTrigger),
+    openRouterWarning: hasOpenRouterModel([rule.primaryId, rule.fallbackId]),
+    costRange,
+    caveat: rule.caveat,
+    showComparison: rule.showComparison,
+  };
 };
 
 export function getRecommendation(input: PickerInput): PickerOutput {
@@ -454,18 +632,27 @@ export function getRecommendation(input: PickerInput): PickerOutput {
     };
   }
 
-  const rule = RULES.find((candidate) => candidate.match(input)) ?? DEFAULT_RULE;
-  const costRange = getEstimatedMonthlyRange(input, rule.primaryId, rule.fallbackId);
+  // Redirect "other" use case to assistant logic
+  const resolvedInput = input.useCase === "other"
+    ? { ...input, useCase: "assistant" as const }
+    : input;
 
-  return {
-    primary: {
-      ...buildModelEntry(rule.primaryId, rule.primaryReason),
-      estimatedMonthly: costRange,
-    },
-    fallback: buildModelEntry(rule.fallbackId, rule.fallbackReason, rule.fallbackTrigger),
-    openRouterWarning: hasOpenRouterModel([rule.primaryId, rule.fallbackId]),
-    costRange,
-    caveat: rule.caveat,
-    showComparison: rule.showComparison,
-  };
+  const rule = RULES.find((candidate) => candidate.match(resolvedInput)) ?? DEFAULT_RULE;
+  
+  // If user is ok with local models, override fallback with Ollama
+  // Only for paid tiers — free tier already handles this in its own rules
+  if (resolvedInput.localOk === "yes" && resolvedInput.budget !== "free") {
+    const localFallback = {
+      displayName: "Llama 3.3 (Local)",
+      provider: "Ollama",
+      modelId: "ollama/llama3.3",
+      reason: "Local model as fallback — no API cost when primary hits rate limit.",
+      triggerCondition: "Falls back when primary model rate-limits or you want zero API cost.",
+    };
+    // Override the fallback in the output
+    const output = buildOutput(rule, resolvedInput);
+    return { ...output, fallback: localFallback };
+  }
+
+  return buildOutput(rule, resolvedInput);
 }

@@ -6,9 +6,10 @@ interface CostEstimateProps {
   low: number;
   high: number;
   isFlatRate?: boolean;
+  primaryModelId?: string;
 }
 
-export function CostEstimate({ low, high, isFlatRate }: CostEstimateProps) {
+export function CostEstimate({ low, high, isFlatRate, primaryModelId }: CostEstimateProps) {
   const safeLow = typeof low === "number" && !isNaN(low) ? low : null;
   const safeHigh = typeof high === "number" && !isNaN(high) ? high : null;
 
@@ -44,8 +45,17 @@ export function CostEstimate({ low, high, isFlatRate }: CostEstimateProps) {
             <span className="pb-1 text-sm text-muted-foreground">/ month</span>
           </div>
           <p className="mt-3 text-sm text-muted-foreground">
-            Typical cost for this use case. Verify exact spend in the Token Cost Calculator before budgeting.
+            Estimated for ~50 messages/day with average token usage.
           </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Heavy usage (200+ messages/day) can cost 4–5x more. Verify exact spend in the Token Cost Calculator.
+          </p>
+          {primaryModelId?.includes("opus") && !isFlatRate && (
+            <p className="mt-2 text-sm font-medium" style={{ color: "hsl(var(--accent))" }}>
+              Warning: Opus at heavy usage (100+ messages/day) can exceed $100/month
+              on API billing. Verify exact spend in the Token Cost Calculator.
+            </p>
+          )}
         </>
       )}
     </section>

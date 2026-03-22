@@ -62,14 +62,14 @@ export const getEstimatedMonthlyRange = (
   primaryModelId: string,
   fallbackModelId: string,
 ): { low: number; high: number; isFlatRate?: boolean } => {
-  // Subscription models have flat rate pricing ($20/month) only for 20to40 budget
+  // Claude Pro / ChatGPT Plus tier
   if (input.billing === "subscription" && input.budget === "20to40") {
     return { low: 20, high: 20, isFlatRate: true };
   }
 
-  // Other subscription tiers are included in plan
-  if (input.billing === "subscription") {
-    return { low: 0, high: 0, isFlatRate: true };
+  // Claude Max or higher tier
+  if (input.billing === "subscription" && input.budget === "40plus") {
+    return { low: 40, high: 100, isFlatRate: false };
   }
 
   if (input.budget === "free") {
@@ -80,6 +80,8 @@ export const getEstimatedMonthlyRange = (
     return { low: 0, high: 0 };
   }
 
+  // Sub-$20 subscription tiers — calculate normally as API
+  // These may be different plans or API-based subscriptions
   const profile = USAGE_PROFILES[input.useCase];
   const budgetMultiplier = BUDGET_MULTIPLIERS[input.budget];
   const billingMultiplier = BILLING_MULTIPLIERS[input.billing];

@@ -43,6 +43,16 @@ const MODEL_DEFINITIONS: Record<string, ModelDefinition> = {
     provider: "MiniMax",
     modelId: "minimax/minimax-m2.5",
   },
+  "openai/gpt-4o": {
+    displayName: "GPT-4o",
+    provider: "OpenAI",
+    modelId: "openai/gpt-4o",
+  },
+  "openai/gpt-4o-mini": {
+    displayName: "GPT-4o Mini",
+    provider: "OpenAI",
+    modelId: "openai/gpt-4o-mini",
+  },
   "openai-codex/gpt-5.3-codex": {
     displayName: "GPT-5.3 Codex",
     provider: "OpenAI Codex OAuth",
