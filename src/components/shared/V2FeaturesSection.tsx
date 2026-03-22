@@ -48,7 +48,7 @@ export function V2FeaturesSection({ tool }: V2FeaturesSectionProps) {
   return (
     <section className="rounded-brand border border-primary/20 bg-background/90 p-6">
       <p className="text-sm font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-        Coming Soon
+        Features coming soon in v2 of Modlel Picker
       </p>
       <div className="mt-4 grid gap-4 md:grid-cols-2">
         {features.map((feature) => (
