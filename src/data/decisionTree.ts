@@ -494,16 +494,16 @@ const RULES: RecommendationRule[] = [
   },
   {
     match: (input) => input.useCase === "coding" && input.toolCalls === "no" && input.billing === "api" && input.budget === "20to40",
-    primaryId: "anthropic/claude-sonnet-4-6",
-    primaryReason: "Strong coding quality at $20-40 API spend.",
+    primaryId: "openai/gpt-5.2",
+    primaryReason: "6x more messages per day than Claude at the same $20 price. Best choice when tool call reliability is not required.",
     fallbackId: "google/gemini-2.5-flash",
     fallbackReason: "Cheaper backup when you don't need Sonnet-level quality.",
     fallbackTrigger: "Falls back when the task is straightforward and doesn't require Sonnet.",
   },
   {
     match: (input) => input.useCase === "coding" && input.toolCalls === "no" && input.billing === "api" && input.budget === "40plus",
-    primaryId: "anthropic/claude-sonnet-4-6",
-    primaryReason: "Maximum coding quality on API billing.",
+    primaryId: "openai/gpt-5.2",
+    primaryReason: "6x more messages per day than Claude at the same $20 price. Best choice when tool call reliability is not required.",
     fallbackId: "anthropic/claude-haiku-4-5",
     fallbackReason: "Lower-cost backup when you still want Anthropic-style behavior.",
     fallbackTrigger: "Falls back when the primary model is overkill for the next turn.",
@@ -546,7 +546,8 @@ const RULES: RecommendationRule[] = [
     match: (input) =>
       input.useCase === "assistant" &&
       input.billing === "api" &&
-      input.budget === "20to40",
+      input.budget === "20to40" &&
+      needsToolCalls(input),
     primaryId: "anthropic/claude-sonnet-4-6",
     primaryReason: "Best assistant quality within $20-40 API budget.",
     fallbackId: "moonshot/kimi-k2.5",
