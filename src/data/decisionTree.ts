@@ -168,13 +168,13 @@ const RULES: RecommendationRule[] = [
       input.billing === "subscription" &&
       input.budget === "20to40" &&
       input.toolCalls === "no",
-    primaryId: "openai/gpt-4o",
+    primaryId: "openai/gpt-5.2",
     primaryReason: "6x more messages per day than Claude Pro at the same $20 price. Best choice when tool call reliability is not a constraint.",
     fallbackId: "moonshot/kimi-k2.5",
-    fallbackReason: "API-based backup when subscription model hits daily limit.",
-    fallbackTrigger: "Falls back when the daily message limit is reached.",
-    showComparison: true,
-    // ComparisonNote still renders — now shows Claude as the capability alternative
+    fallbackReason: "API-based backup when GPT daily limit is reached.",
+    fallbackTrigger: "Falls back when daily message limit is reached.",
+    showComparison: false,
+    // ComparisonNote does not render — no alternative shown
   },
   // Coding + subscription + 15to20
   {
@@ -196,13 +196,30 @@ const RULES: RecommendationRule[] = [
   },
   // Assistant + subscription + 20to40
   {
-    match: (input) => input.useCase === "assistant" && input.billing === "subscription" && input.budget === "20to40",
+    match: (input) =>
+      input.useCase === "assistant" &&
+      input.billing === "subscription" &&
+      input.budget === "20to40" &&
+      needsToolCalls(input),
     primaryId: "anthropic/claude-sonnet-4-6",
     primaryReason: "Best assistant quality at the $20 price point.",
     fallbackId: "moonshot/kimi-k2.5",
     fallbackReason: "API-based backup when subscription model hits daily limit.",
     fallbackTrigger: "Falls back when Claude Pro message limits are reached.",
     showComparison: true,
+  },
+  {
+    match: (input) =>
+      input.useCase === "assistant" &&
+      input.billing === "subscription" &&
+      input.budget === "20to40" &&
+      input.toolCalls === "no",
+    primaryId: "openai/gpt-5.2",
+    primaryReason: "6x more messages per day than Claude Pro at the same $20 price. Best choice when tool call reliability is not required.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "API-based backup when GPT daily limit is reached.",
+    fallbackTrigger: "Falls back when daily message limit is reached.",
+    showComparison: false,
   },
   // Assistant + subscription + 15to20
   {
@@ -251,13 +268,30 @@ const RULES: RecommendationRule[] = [
   },
   // Debrief + subscription + 20to40
   {
-    match: (input) => input.useCase === "debrief" && input.billing === "subscription" && input.budget === "20to40",
+    match: (input) =>
+      input.useCase === "debrief" &&
+      input.billing === "subscription" &&
+      input.budget === "20to40" &&
+      needsToolCalls(input),
     primaryId: "anthropic/claude-sonnet-4-6",
     primaryReason: "Best summary quality at the subscription price point.",
     fallbackId: "moonshot/kimi-k2.5",
     fallbackReason: "Cost-effective backup for routine debrief tasks.",
     fallbackTrigger: "Falls back when the debrief is straightforward.",
     showComparison: true,
+  },
+  {
+    match: (input) =>
+      input.useCase === "debrief" &&
+      input.billing === "subscription" &&
+      input.budget === "20to40" &&
+      input.toolCalls === "no",
+    primaryId: "openai/gpt-5.2",
+    primaryReason: "6x more messages per day than Claude Pro at the same $20 price. Best choice when tool call reliability is not required.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "API-based backup when GPT daily limit is reached.",
+    fallbackTrigger: "Falls back when daily message limit is reached.",
+    showComparison: false,
   },
   // AUTOMATION — subscription billing (all budget tiers)
   {
@@ -285,12 +319,30 @@ const RULES: RecommendationRule[] = [
     fallbackTrigger: "Falls back when task complexity exceeds Flash capabilities.",
   },
   {
-    match: (input) => input.useCase === "automation" && input.billing === "subscription" && input.budget === "20to40",
+    match: (input) =>
+      input.useCase === "automation" &&
+      input.billing === "subscription" &&
+      input.budget === "20to40" &&
+      needsToolCalls(input),
     primaryId: "anthropic/claude-sonnet-4-6",
     primaryReason: "Most reliable automation with Claude Pro plan.",
     fallbackId: "anthropic/claude-haiku-4-5",
     fallbackReason: "Lower-cost backup when the flow can tolerate a smaller model.",
-    fallbackTrigger: "Falls back when automations need a cheaper retry path after failure.",
+    fallbackTrigger: "Falls back when automations need a cheaper retry path.",
+    showComparison: true,
+  },
+  {
+    match: (input) =>
+      input.useCase === "automation" &&
+      input.billing === "subscription" &&
+      input.budget === "20to40" &&
+      input.toolCalls === "no",
+    primaryId: "openai/gpt-5.2",
+    primaryReason: "6x more messages per day than Claude Pro at the same $20 price. Best choice when tool call reliability is not required.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "API-based backup when GPT daily limit is reached.",
+    fallbackTrigger: "Falls back when daily message limit is reached.",
+    showComparison: false,
   },
   {
     match: (input) => input.useCase === "automation" && input.billing === "subscription" && input.budget === "40plus",
@@ -500,6 +552,20 @@ const RULES: RecommendationRule[] = [
     fallbackId: "moonshot/kimi-k2.5",
     fallbackReason: "Cost-effective backup for routine assistant turns.",
     fallbackTrigger: "Falls back when you want to preserve budget on simple turns.",
+    showComparison: true,
+  },
+  {
+    match: (input) =>
+      input.useCase === "assistant" &&
+      input.billing === "api" &&
+      input.budget === "20to40" &&
+      input.toolCalls === "no",
+    primaryId: "openai/gpt-5.2",
+    primaryReason: "6x more messages per day than Claude Pro at the same $20 price. Best choice when tool call reliability is not required.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "API-based backup when GPT daily limit is reached.",
+    fallbackTrigger: "Falls back when daily message limit is reached.",
+    showComparison: false,
   },
   {
     match: (input) =>
@@ -551,12 +617,27 @@ const RULES: RecommendationRule[] = [
     match: (input) =>
       input.useCase === "debrief" &&
       input.billing === "api" &&
-      (input.budget === "20to40" || input.budget === "40plus"),
+      input.budget === "20to40" &&
+      needsToolCalls(input),
     primaryId: "anthropic/claude-sonnet-4-6",
     primaryReason: "Best summary quality at this API budget.",
     fallbackId: "moonshot/kimi-k2.5",
     fallbackReason: "Cost-effective backup for routine debrief tasks.",
     fallbackTrigger: "Falls back when the recap is straightforward.",
+    showComparison: true,
+  },
+  {
+    match: (input) =>
+      input.useCase === "debrief" &&
+      input.billing === "api" &&
+      input.budget === "20to40" &&
+      input.toolCalls === "no",
+    primaryId: "openai/gpt-5.2",
+    primaryReason: "6x more messages per day than Claude Pro at the same $20 price. Best choice when tool call reliability is not required.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "API-based backup when GPT daily limit is reached.",
+    fallbackTrigger: "Falls back when daily message limit is reached.",
+    showComparison: false,
   },
   // RESEARCH + API billing (missing 20to40 and 40plus)
   {
@@ -580,6 +661,59 @@ const RULES: RecommendationRule[] = [
     fallbackId: "google/gemini-2.5-pro",
     fallbackReason: "Strong research backup with lower spend than Opus.",
     fallbackTrigger: "Falls back when you want broad research without Opus pricing.",
+  },
+  {
+    match: (input) =>
+      input.useCase === "debrief" &&
+      input.billing === "api" &&
+      input.budget === "40plus" &&
+      needsToolCalls(input),
+    primaryId: "anthropic/claude-sonnet-4-6",
+    primaryReason: "Best summary quality at this API budget.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "Cost-effective backup for routine debrief tasks.",
+    fallbackTrigger: "Falls back when the recap is straightforward.",
+    showComparison: true,
+  },
+  {
+    match: (input) =>
+      input.useCase === "debrief" &&
+      input.billing === "api" &&
+      input.budget === "40plus" &&
+      input.toolCalls === "no",
+    primaryId: "openai/gpt-5.2",
+    primaryReason: "6x more messages per day than Claude Pro at the same $20 price. Best choice when tool call reliability is not required.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "API-based backup when GPT daily limit is reached.",
+    fallbackTrigger: "Falls back when daily message limit is reached.",
+    showComparison: false,
+  },
+  // AUTOMATION + API billing (missing tiers)
+  {
+    match: (input) =>
+      input.useCase === "automation" &&
+      input.billing === "api" &&
+      input.budget === "20to40" &&
+      needsToolCalls(input),
+    primaryId: "anthropic/claude-sonnet-4-6",
+    primaryReason: "Best tool call reliability in this API budget range.",
+    fallbackId: "anthropic/claude-haiku-4-5",
+    fallbackReason: "Cheaper fallback for less critical automation steps.",
+    fallbackTrigger: "Falls back when automations need a cheaper retry path.",
+    showComparison: true,
+  },
+  {
+    match: (input) =>
+      input.useCase === "automation" &&
+      input.billing === "api" &&
+      input.budget === "20to40" &&
+      input.toolCalls === "no",
+    primaryId: "openai/gpt-5.2",
+    primaryReason: "6x more messages per day than Claude Pro at the same $20 price. Best choice when tool call reliability is not required.",
+    fallbackId: "moonshot/kimi-k2.5",
+    fallbackReason: "API-based backup when GPT daily limit is reached.",
+    fallbackTrigger: "Falls back when daily message limit is reached.",
+    showComparison: false,
   },
 ];
 

@@ -343,7 +343,7 @@ export function QuestionForm() {
               <RecommendationCard label="Fallback" entry={recommendation.fallback} />
             </div>
 
-            {recommendation.showComparison ? <ComparisonNote gptIsPrimary={recommendation.primary.modelId.startsWith("openai/")} /> : null}
+            {recommendation.showComparison ? <ComparisonNote /> : null}
 
             <CostEstimate low={recommendation.costRange.low} high={recommendation.costRange.high} isFlatRate={recommendation.costRange.isFlatRate} primaryModelId={recommendation.primary.modelId} />
             <OpenRouterTooltip visible={recommendation.openRouterWarning} />
