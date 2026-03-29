@@ -19,8 +19,11 @@ export function Header() {
         </Link>
 
         <nav className="flex items-center justify-end gap-3 text-sm font-semibold text-muted-foreground sm:w-auto sm:gap-5">
+          <a href={SOCIAL_LINKS.tool_calculator} target="_blank" className="hidden transition hover:text-foreground sm:inline">
+            Calculator
+          </a>
           <a href={SOCIAL_LINKS.tools} target="_blank" className="hidden transition hover:text-foreground sm:inline">
-            Tools
+            Tools Hub
           </a>
           <Link
             href={SOCIAL_LINKS.github}

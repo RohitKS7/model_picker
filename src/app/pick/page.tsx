@@ -12,6 +12,22 @@ export const metadata: Metadata = {
   title: "OpenClaw Model Picker | GuardClaw",
   description:
     "Answer five questions and get a recommended primary and fallback OpenClaw model stack with a copyable config snippet.",
+  alternates: {
+    canonical: "https://guardclaw.dev/picker",
+  },
+  openGraph: {
+    title: "OpenClaw Model Picker | GuardClaw",
+    description:
+      "Answer five questions and get a recommended primary and fallback OpenClaw model stack with a copyable config snippet.",
+    url: "https://guardclaw.dev/picker",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OpenClaw Model Picker | GuardClaw",
+    description:
+      "Get a practical OpenClaw model recommendation based on use case, budget, and billing mode.",
+  },
 };
 
 export default function PickPage() {
@@ -30,6 +46,27 @@ export default function PickPage() {
         />
       }
     >
+      <section className="mb-8 rounded-brand border border-primary/20 bg-secondary/30 p-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">Field Note</p>
+        <div className="mt-3 grid gap-2">
+          <a
+            href="https://guardclaw.dev/tools/openclaw-model-picker-workflow?source=picker"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg border border-primary/15 bg-background/80 px-3 py-2 text-sm font-semibold transition hover:border-primary/40"
+          >
+            Most model mistakes come from guesswork -&gt; learn why
+          </a>
+          <a
+            href="https://guardclaw.dev/tools/openclaw-model-cost-comparison?source=picker"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-lg border border-primary/15 bg-background/80 px-3 py-2 text-sm font-semibold transition hover:border-primary/40"
+          >
+            Benchmark picks can still be expensive in production -&gt; learn why
+          </a>
+        </div>
+      </section>
       <Suspense fallback={<div className="rounded-brand border border-primary/20 bg-background/90 p-6">Loading picker...</div>}>
         <QuestionForm />
       </Suspense>

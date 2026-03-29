@@ -13,6 +13,22 @@ export const metadata: Metadata = {
   title: "OpenClaw Model Picker Overview | GuardClaw",
   description:
     "A short five-question flow that recommends the right OpenClaw model stack for your use case, budget, and tool-call needs.",
+  alternates: {
+    canonical: "https://guardclaw.dev/picker",
+  },
+  openGraph: {
+    title: "OpenClaw Model Picker Overview | GuardClaw",
+    description:
+      "A short five-question flow that recommends the right OpenClaw model stack for your use case, budget, and tool-call needs.",
+    url: "https://guardclaw.dev/picker",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OpenClaw Model Picker Overview | GuardClaw",
+    description:
+      "Answer five questions and get a recommended OpenClaw primary and fallback model stack.",
+  },
 };
 
 const quotes = [

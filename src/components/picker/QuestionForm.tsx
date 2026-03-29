@@ -366,6 +366,33 @@ export function QuestionForm() {
               fallbackModelId={recommendation.fallback.modelId}
             />
 
+            <section className="rounded-brand border border-primary/20 bg-secondary/35 p-5 hover-lift">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                Next Step
+              </p>
+              <h3 className="mt-2 text-xl font-bold">Estimate spend before you ship this stack</h3>
+              <p className="mt-2 text-sm text-muted-foreground">
+                Open the calculator with this recommendation in mind, tune heartbeat and fallback settings,
+                then validate monthly burn with your expected usage.
+              </p>
+              <div className="mt-4 flex flex-wrap gap-3">
+                <Link
+                  href={SOCIAL_LINKS.tool_calculator}
+                  target="_blank"
+                  className="rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition hover:opacity-90"
+                >
+                  Next step: estimate spend
+                </Link>
+                <Link
+                  href={SOCIAL_LINKS.tools}
+                  target="_blank"
+                  className="rounded-full border border-primary/30 px-5 py-2 text-sm font-semibold transition hover:bg-primary hover:text-primary-foreground"
+                >
+                  Browse GuardClaw tools hub
+                </Link>
+              </div>
+            </section>
+
             <div className="flex flex-wrap items-center gap-3 rounded-brand border border-primary/20 bg-secondary/30 p-4 hover-lift">
               <ShareButton url={shareUrl} />
               <p className="text-sm text-muted-foreground">Share this exact setup using a URL with encoded answers.</p>

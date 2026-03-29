@@ -11,6 +11,10 @@ const TOOL_LINKS = [
     label: "Field Note #002 - OpenClaw Model Picker",
     href: SOCIAL_LINKS.tool_modelpicker,
   },
+  {
+    label: "GuardClaw Tools Hub",
+    href: SOCIAL_LINKS.tools,
+  },
 ];
 
 export function Footer() {
