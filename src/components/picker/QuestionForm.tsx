@@ -12,6 +12,7 @@ import { OpenRouterTooltip } from "@/components/picker/OpenRouterTooltip";
 import { RecommendationCard } from "@/components/picker/RecommendationCard";
 import { ShareButton } from "@/components/shared/ShareButton";
 import { ShareResult } from "@/components/shared/ShareResult";
+import { Tooltip } from "@/components/shared/Tooltip";
 import { DEFAULT_PICKER_INPUT } from "@/data/defaults";
 import { getRecommendation } from "@/data/decisionTree";
 import { SOCIAL_LINKS } from "@/data/ecosystem";
@@ -51,6 +52,9 @@ const localOptions: Array<{ value: LocalOk; label: string }> = [
   { value: "yes", label: "Yes" },
   { value: "no", label: "No" },
 ];
+
+const BILLING_MODE_TOOLTIP =
+  "Choose between Subscription (Claude Max/Codex plans) or Pay-per-token (API billing). This determines your actual cost structure.";
 
 const getFallbackTriggerValue = (input: PickerInput): string => {
   if (input.toolCalls === "yes") {
@@ -246,7 +250,12 @@ export function QuestionForm() {
           {input.budget !== "free" ? (
             <>
               <div className="bg-secondary p-4 rounded-md hover-lift">
-                <p className="text-sm font-semibold text-foreground">3. How are you paying?</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-semibold text-foreground">3. How are you paying?</p>
+                  <Tooltip label="Billing Mode" description={BILLING_MODE_TOOLTIP}>
+                    <span className="text-sm font-semibold text-muted-foreground">?</span>
+                  </Tooltip>
+                </div>
                 <p className="mt-1 text-sm text-muted-foreground">
                   This changes how aggressively we optimize for token-priced spend.
                 </p>
